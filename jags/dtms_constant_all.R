@@ -3,11 +3,15 @@ cat("
 model{
   # Priors
   for(i in 1:2){
-    phi[i] ~ dbeta(1, 1)
-    p[i] ~ dbeta(1, 1)
+    h[i] ~ dgamma(1, 4)
+    phi[i] <- exp(-h[i] * l.occasion)
+    
+    mu[i] ~ dgamma(1, 4)
+    p[i] <- 1 - exp(-mu[i] * l.occasion)
   }
 
-  psi12 ~ dbeta(1, 1)
+  eta12 ~ dgamma(1, 4)
+  psi12 <- 1 - exp(-eta12 * l.occasion)
   # g ~ dgamma(1, 1)
   # k ~ dgamma(1, 1)
 
@@ -63,19 +67,6 @@ model{
       y[i,t] ~ dcat(po[z[i, t], 1:3])
       } #t
    } #i
-   
-   ############## Derived parameters
-   # Hazard rates
-   h[1] <- -log(phi[1])/l.occasion
-   h[2] <- -log(phi[2])/l.occasion
-   
-   # Detection rates
-   mu[1] <- -log(1 - p[1])/l.occasion
-   mu[2] <- -log(1 - p[2])/l.occasion
-   
-   # Transition rate
-   eta12 <- -log(1 - psi12)/l.occasion
-   
 }
     ", fill = TRUE)
 sink()

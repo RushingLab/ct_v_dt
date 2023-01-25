@@ -18,11 +18,12 @@ lambda <- c(0.2, 0.1, 0)  # Detection rates
 #### MCMC settings ----
 params <- c("h", "mu", "eta12")
 nC <- 3
-nI <- 2000
+nI <- 2500
 nB <- 500
 nT <- 1
 
 for(ii in 1:nSims){
+  print(paste0("Simulation ", ii))
   #### Simulate data ----
   ctms_data <- sim_dat_constant(N, T, h, eta, lambda)
   
@@ -30,12 +31,12 @@ for(ii in 1:nSims){
   ctms_inits <- function(){list(h = runif(2, 0, 0.015),
                                 eta12 = runif(1, 0, 0.25),
                                 mu = runif(2, 0, 0.25))}
-  
+  print(paste0("CT ", ii))
   ctms_mod <- jagsUI::jags(data = ctms_data, inits = ctms_inits, modules = "msm",
                            parameters.to.save = params, 
                            model.file = "jags/ctms_constant_all.jags", 
                            n.chains = nC, n.iter = nI, 
-                           n.burnin = nB, n.thin = nT, parallel = TRUE)
+                           n.burnin = nB, n.thin = nT, parallel = TRUE, verbose = FALSE)
   
   ctms_summ <- data.frame(Model = "CT", l = 1, Elapsed.time = ctms_mod$mcmc.info$elapsed.mins,
                           sim = ii,
@@ -58,18 +59,18 @@ for(ii in 1:nSims){
   dtms_data <- ct_to_dt(det = ctms_data$det, U = ctms_data$U1, 
                         state = ctms_data$state, 
                         T, l.occasion, conflict_rule)
-  
-  dtms_inits <- function(){list(phi = exp(-runif(2, 0, 0.015) * l.occasion),
-                                psi12 = exp(-runif(1, 0, 0.25) * l.occasion),
-                                p = exp(-runif(2, 0, 0.25) * l.occasion),
+
+  dtms_inits <- function(){list(h = runif(2, 0, 0.015),
+                                eta12 = runif(1, 0, 0.25),
+                                mu = runif(2, 0, 0.25),
                                 z = ms.init.z(dtms_data$y, dtms_data$f))}
   
-  
+  print(paste0("DT ", l.occasion, " ", ii))
   dtms_mod <- jagsUI::jags(data = dtms_data, inits = dtms_inits,
                            parameters.to.save = params, 
                            model.file = "jags/dtms_constant_all.jags", 
                            n.chains = nC, n.iter = nI, 
-                           n.burnin = nB, n.thin = nT, parallel = TRUE)
+                           n.burnin = nB, n.thin = nT, parallel = TRUE, verbose = FALSE)
   
   dtms_summ1 <- data.frame(Model = "DT", l = l.occasion, Elapsed.time = dtms_mod$mcmc.info$elapsed.mins,
                           sim = ii,
@@ -94,17 +95,13 @@ for(ii in 1:nSims){
                         state = ctms_data$state, 
                         T, l.occasion, conflict_rule)
   
-  dtms_inits <- function(){list(phi = exp(-runif(2, 0, 0.015) * l.occasion),
-                                psi12 = exp(-runif(1, 0, 0.25) * l.occasion),
-                                p = exp(-runif(2, 0, 0.25) * l.occasion),
-                                z = ms.init.z(dtms_data$y, dtms_data$f))}
   
-  
+  print(paste0("DT ", l.occasion, " ", ii))
   dtms_mod <- jagsUI::jags(data = dtms_data, inits = dtms_inits,
                            parameters.to.save = params, 
                            model.file = "jags/dtms_constant_all.jags", 
                            n.chains = nC, n.iter = nI, 
-                           n.burnin = nB, n.thin = nT, parallel = TRUE)
+                           n.burnin = nB, n.thin = nT, parallel = TRUE, verbose = FALSE)
   
   dtms_summ2 <- data.frame(Model = "DT", l = l.occasion, Elapsed.time = dtms_mod$mcmc.info$elapsed.mins,
                            sim = ii,
@@ -129,17 +126,13 @@ for(ii in 1:nSims){
                         state = ctms_data$state, 
                         T, l.occasion, conflict_rule)
   
-  dtms_inits <- function(){list(phi = exp(-runif(2, 0, 0.015) * l.occasion),
-                                psi12 = exp(-runif(1, 0, 0.25) * l.occasion),
-                                p = exp(-runif(2, 0, 0.25) * l.occasion),
-                                z = ms.init.z(dtms_data$y, dtms_data$f))}
   
-  
+  print(paste0("DT ", l.occasion, " ", ii))
   dtms_mod <- jagsUI::jags(data = dtms_data, inits = dtms_inits,
                            parameters.to.save = params, 
                            model.file = "jags/dtms_constant_all.jags", 
                            n.chains = nC, n.iter = nI, 
-                           n.burnin = nB, n.thin = nT, parallel = TRUE)
+                           n.burnin = nB, n.thin = nT, parallel = TRUE, verbose = FALSE)
   
   dtms_summ5 <- data.frame(Model = "DT", l = l.occasion, Elapsed.time = dtms_mod$mcmc.info$elapsed.mins,
                            sim = ii,
@@ -165,17 +158,13 @@ for(ii in 1:nSims){
                         state = ctms_data$state, 
                         T, l.occasion, conflict_rule)
   
-  dtms_inits <- function(){list(phi = exp(-runif(2, 0, 0.015) * l.occasion),
-                                psi12 = exp(-runif(1, 0, 0.25) * l.occasion),
-                                p = exp(-runif(2, 0, 0.25) * l.occasion),
-                                z = ms.init.z(dtms_data$y, dtms_data$f))}
   
-  
+  print(paste0("DT ", l.occasion, " ", ii))
   dtms_mod <- jagsUI::jags(data = dtms_data, inits = dtms_inits,
                            parameters.to.save = params, 
                            model.file = "jags/dtms_constant_all.jags", 
                            n.chains = nC, n.iter = nI, 
-                           n.burnin = nB, n.thin = nT, parallel = TRUE)
+                           n.burnin = nB, n.thin = nT, parallel = TRUE, verbose = FALSE)
   
   dtms_summ10 <- data.frame(Model = "DT", l = l.occasion, Elapsed.time = dtms_mod$mcmc.info$elapsed.mins,
                            sim = ii,
@@ -200,17 +189,13 @@ for(ii in 1:nSims){
                         state = ctms_data$state, 
                         T, l.occasion, conflict_rule)
   
-  dtms_inits <- function(){list(phi = exp(-runif(2, 0, 0.015) * l.occasion),
-                                psi12 = exp(-runif(1, 0, 0.25) * l.occasion),
-                                p = exp(-runif(2, 0, 0.25) * l.occasion),
-                                z = ms.init.z(dtms_data$y, dtms_data$f))}
   
-  
+  print(paste0("DT ", l.occasion, " ", ii))
   dtms_mod <- jagsUI::jags(data = dtms_data, inits = dtms_inits,
                            parameters.to.save = params, 
                            model.file = "jags/dtms_constant_all.jags", 
                            n.chains = nC, n.iter = nI, 
-                           n.burnin = nB, n.thin = nT, parallel = TRUE)
+                           n.burnin = nB, n.thin = nT, parallel = TRUE, verbose = FALSE)
   
   dtms_summ20 <- data.frame(Model = "DT", l = l.occasion, Elapsed.time = dtms_mod$mcmc.info$elapsed.mins,
                            sim = ii,
@@ -234,6 +219,20 @@ for(ii in 1:nSims){
                            dtms_Summ5, 
                            dtms_Summ10,
                            dtms_Summ20)
+  
+  saveRDS(Summ, "output/sim1_constant_all.RDS")
+  ggplot() + 
+    geom_hline(data = true_df, aes(yintercept = value), linetype = "dashed", color = "grey50") +
+    geom_boxplot(data = Summ, aes(x = as.factor(l), y = Est, color = Model)) +
+    facet_wrap(~Param, scale = "free")
+  
+  ggplot(Summ, aes(x = as.factor(l), y = Elapsed.time, color = Model)) + geom_boxplot()
 }
 
-saveRDS(Summ, "output/sim1_constant_all.RDS")
+
+
+  true_df <- data.frame(Param = unique(Summ$Param),
+                      value = c(h, lambda[1:2], eta))
+library(ggplot2)
+
+ 
